@@ -2,8 +2,11 @@
 
 откройте терминал и для добавления юзера введите следующее
 > python manage.py shell
+
 > from django.contrib.auth.models import User
+
 > user = User.objects.create_user(username='Придумайте имя', password='придумайте пароль')
+
 > User.objects.all()     так вы можете убедится что ваш пользователь создан
 
 
