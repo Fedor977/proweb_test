@@ -16,7 +16,7 @@ class CustomPageNumberPagination(PageNumberPagination):
 
 
 class TaskFilter(filters.FilterSet):
-    status = filters.ChoiceFilter(choices=Task.STATUS_CHOICES, label='Status')  # Добавьте это для фильтрации по статусу
+    status = filters.ChoiceFilter(choices=Task.STATUS_CHOICES, label='Status')  
 
     class Meta:
         model = Task
@@ -37,23 +37,23 @@ class TaskViewSet(viewsets.ModelViewSet):
     ordering = ['created_at']
 
     def get_queryset(self):
-        """Получение списка задач для авторизованного пользователя через сервис"""
+        """Получение списка задач для авторизованного пользователя через сервисы"""
         return get_tasks_for_user(self.request.user)
 
     def retrieve(self, request, pk=None):
-        """Получение информации конкретной задачи по id через сервис"""
+        """Получение информации конкретной задачи по id через сервисы"""
         task = get_task_by_id(request.user, pk)
         serializer = self.get_serializer(task)
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        """Создание новой задачи через сервис"""
+        """Создание новой задачи через сервисы"""
         task_data = self.request.data
         task = serializer.save(user=self.request.user, **task_data)
         return task
 
     def perform_update(self, serializer):
-        """Обновление задачи через сервис"""
+        """Обновление задачи через сервисы"""
         task_data = self.request.data
         task = serializer.save(user=self.request.user, **task_data)
         return task
@@ -64,18 +64,18 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """Реализация функционала для работы с комментариями через ModelViewSet"""
+    """Реализация функционала для работы с комментариями"""
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        """Получение комментариев к конкретной задаче через сервис"""
+        """Получение комментариев конкретной задачи"""
         task_pk = self.kwargs['task_pk']
         task = get_task_by_id(self.request.user, task_pk)
         return get_comments_for_task(task)
 
     def perform_create(self, serializer):
-        """Создание нового комментария к задаче через сервис"""
+        """Создание нового комментария к задаче"""
         task_pk = self.kwargs['task_pk']
         task = get_task_by_id(self.request.user, task_pk)
         create_comment(self.request.user, task, self.request.data)
